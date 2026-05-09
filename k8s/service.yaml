@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: flask-devops-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: flask-devops
   ports:

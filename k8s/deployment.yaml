@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: flask-devops-deployment
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: flask-devops
+
+  template:
+    metadata:
+      labels:
+        app: flask-devops
+
+    spec:
+      containers:
+      - name: flask-devops-container
+        image: nginx:latest
+        imagePullPolicy: Never
+
+        ports:
+        - containerPort: 5000
+
+        envFrom:
+        - configMapRef:
+            name: flask-devops-config
+
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: flask-secret
+              key: DB_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: flask-secret
+              key: DB_PASSWORD
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5

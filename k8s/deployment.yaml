@@ -20,7 +20,7 @@ spec:
       containers:
       - name: flask-devops-container
         image: prathamesh018/flask-devops-app:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
 
         ports:
         - containerPort: 5000
